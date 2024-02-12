@@ -1,0 +1,27 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+
+processors:
+  batch:
+    timeout: 1s
+    send_batch_size: 1024  
+
+exporters:
+  prometheus:
+    endpoint: "0.0.0.0:8889"
+    enable_open_metrics: true
+    resource_to_telemetry_conversion:
+      enabled: true
+    send_timestamps: true      
+
+  logging:
+    verbosity: detailed
+
+service:
+  pipelines:
+    metrics:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [logging, prometheus]
